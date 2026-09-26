@@ -1,14 +1,5 @@
 import { formatNumber, tidy } from './format';
-import type {
-  BarMode,
-  Exercise,
-  ExerciseBests,
-  PrType,
-  SetKind,
-  Side,
-  TrackingType,
-  WeightMode,
-} from './types';
+import type { BarMode, Exercise, ExerciseBests, PrType, SetKind, Side, TrackingType, WeightMode } from './types';
 
 export type LoadConfig = Pick<Exercise, 'weightMode' | 'barMode' | 'barWeight'>;
 export type ExerciseConfig = LoadConfig & Pick<Exercise, 'tracking'>;
@@ -82,10 +73,7 @@ export function mergeBests(bests: ExerciseBests, set: SetValues, config: LoadCon
     maxE1rm: maxOf(bests.maxE1rm, reps && weight ? estimate1RM(weight, reps) : null),
     maxReps: maxOf(bests.maxReps, reps),
     maxDuration: maxOf(bests.maxDuration, duration),
-    maxSetVolume: maxOf(
-      bests.maxSetVolume,
-      reps && weight ? setVolume({ reps, weight }, config) : null,
-    ),
+    maxSetVolume: maxOf(bests.maxSetVolume, reps && weight ? setVolume({ reps, weight }, config) : null),
   };
 }
 
@@ -94,6 +82,11 @@ export function computeBests(sets: readonly SetValues[], config: LoadConfig): Ex
 }
 
 const EPS = 1e-6;
+
+/** True if there is at least one previous value, i.e. records can be broken. */
+export function hasBests(bests: ExerciseBests): boolean {
+  return bests.maxWeight != null || bests.maxE1rm != null || bests.maxReps != null || bests.maxDuration != null;
+}
 
 /**
  * Which personal records a new set beats. A record needs a previous value

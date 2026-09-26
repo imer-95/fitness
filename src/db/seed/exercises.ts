@@ -1,10 +1,4 @@
-import type {
-  BarMode,
-  Equipment,
-  MuscleGroup,
-  TrackingType,
-  WeightMode,
-} from '@/domain/types';
+import type { BarMode, Equipment, MuscleGroup, TrackingType, WeightMode } from '@/domain/types';
 
 export interface SeedExercise {
   id: string;

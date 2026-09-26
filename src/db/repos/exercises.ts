@@ -1,13 +1,6 @@
 import { createId } from '@/domain/id';
 import { normalizeName } from '@/domain/notes';
-import type {
-  BarMode,
-  Equipment,
-  Exercise,
-  MuscleGroup,
-  TrackingType,
-  WeightMode,
-} from '@/domain/types';
+import type { BarMode, Equipment, Exercise, MuscleGroup, TrackingType, WeightMode } from '@/domain/types';
 
 import { emitChange } from '../events';
 import { bool, db, jsonParse, placeholders } from '../sql';
@@ -54,12 +47,7 @@ export function mapExercise(row: ExerciseRow): Exercise {
 
 /** Sort key that orders umlauts like their base letter (Ä -> A). */
 export function germanSortKey(value: string): string {
-  return value
-    .toLowerCase()
-    .replace(/ä/g, 'a')
-    .replace(/ö/g, 'o')
-    .replace(/ü/g, 'u')
-    .replace(/ß/g, 'ss');
+  return value.toLowerCase().replace(/ä/g, 'a').replace(/ö/g, 'o').replace(/ü/g, 'u').replace(/ß/g, 'ss');
 }
 
 export function sortByName<T extends { name: string }>(items: T[]): T[] {

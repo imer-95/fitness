@@ -8,15 +8,7 @@ import type { DateKey } from './types';
 
 export const DAY_MS = 24 * 60 * 60 * 1000;
 
-export const WEEKDAYS_LONG = [
-  'Sonntag',
-  'Montag',
-  'Dienstag',
-  'Mittwoch',
-  'Donnerstag',
-  'Freitag',
-  'Samstag',
-] as const;
+export const WEEKDAYS_LONG = ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'] as const;
 export const WEEKDAYS_SHORT = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'] as const;
 /** Monday-first order used in calendars and week strips. */
 export const WEEKDAYS_MONDAY_FIRST = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'] as const;

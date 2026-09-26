@@ -157,7 +157,19 @@ export async function exportWorkoutsCsv(): Promise<string> {
       ORDER BY w.started_at, we.position, s.position`,
   );
   return toCsv(
-    ['Datum', 'Uhrzeit', 'Training', 'Übung', 'Satz', 'Wiederholungen', 'Gewicht (kg)', 'Dauer (s)', 'Seite', 'Art', 'Pause (s)'],
+    [
+      'Datum',
+      'Uhrzeit',
+      'Training',
+      'Übung',
+      'Satz',
+      'Wiederholungen',
+      'Gewicht (kg)',
+      'Dauer (s)',
+      'Seite',
+      'Art',
+      'Pause (s)',
+    ],
     rows.map((r) => [
       toDateKey(r.started_at),
       formatTime(r.started_at),

@@ -1,16 +1,12 @@
 import { addDays, startOfWeek, toDateKey } from './dates';
-import { detectPrs, estimate1RM, mergeBests, EMPTY_BESTS, type ExerciseConfig } from './strength';
+import { detectPrs, EMPTY_BESTS, estimate1RM, hasBests, mergeBests, type ExerciseConfig } from './strength';
 import type { DateKey, ExerciseBests, PrType, SetKind } from './types';
 
 /**
  * Consecutive weeks (Mon–Sun) with at least `goal` workouts. The current
  * week only counts once the goal is reached, but does not break the streak.
  */
-export function weeklyStreak(
-  workoutDays: readonly DateKey[],
-  goal: number,
-  today: DateKey,
-): number {
+export function weeklyStreak(workoutDays: readonly DateKey[], goal: number, today: DateKey): number {
   if (goal <= 0) return 0;
   const perWeek = new Map<DateKey, number>();
   for (const day of workoutDays) {
@@ -105,11 +101,13 @@ export function analyzeHistory(
     const config = configs.get(exerciseId);
     if (!config) continue;
     const before = bests.get(exerciseId) ?? EMPTY_BESTS;
+    // Records only count against earlier workouts, not the first session of an exercise.
+    const canBreakRecords = hasBests(before);
     const blockPrs = new Map<PrType, PrEvent>();
     let running = before;
     let sessionBest = 0;
     for (const set of block) {
-      for (const type of detectPrs(set, running, config.tracking)) {
+      for (const type of canBreakRecords ? detectPrs(set, running, config.tracking) : []) {
         const value = prValue(type, set);
         const existing = blockPrs.get(type);
         if (!existing || value > existing.value) {

@@ -75,11 +75,7 @@ export async function getFoodByBarcode(barcode: string): Promise<Food | null> {
  * prefix matches, favorites and frequently used foods first.
  */
 export async function searchFoods(query: string, limit = 60): Promise<Food[]> {
-  const words = query
-    .trim()
-    .toLowerCase()
-    .split(/\s+/)
-    .filter(Boolean);
+  const words = query.trim().toLowerCase().split(/\s+/).filter(Boolean);
   const params: SqlValue[] = [];
   let where = 'archived = 0';
   for (const w of words) {
@@ -110,9 +106,7 @@ export async function listRecentFoods(limit = 30): Promise<Food[]> {
 }
 
 export async function listFavoriteFoods(): Promise<Food[]> {
-  const rows = await db().getAllAsync<FoodRow>(
-    'SELECT * FROM foods WHERE archived = 0 AND favorite = 1 ORDER BY name',
-  );
+  const rows = await db().getAllAsync<FoodRow>('SELECT * FROM foods WHERE archived = 0 AND favorite = 1 ORDER BY name');
   return rows.map(mapFood);
 }
 
@@ -291,10 +285,9 @@ export async function deleteFoodEntry(id: string): Promise<void> {
 }
 
 export async function listFoodEntries(date: DateKey): Promise<FoodEntry[]> {
-  const rows = await db().getAllAsync<EntryRow>(
-    'SELECT * FROM food_entries WHERE date = ? ORDER BY created_at',
-    [date],
-  );
+  const rows = await db().getAllAsync<EntryRow>('SELECT * FROM food_entries WHERE date = ? ORDER BY created_at', [
+    date,
+  ]);
   return rows.map(mapEntry);
 }
 

@@ -11,8 +11,6 @@ import {
 
 import { USER_NOTES } from './fixtures/userNotes';
 
-
-
 describe('parseWorkoutNotes – user notes', () => {
   const result = parseWorkoutNotes(USER_NOTES, { today: '2026-09-26' });
   const workout = result.workouts[0];

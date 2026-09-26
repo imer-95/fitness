@@ -8,12 +8,7 @@ import {
   validateBackup,
 } from '@/db/repos/backup';
 import { listCardio, saveCardio } from '@/db/repos/cardio';
-import {
-  createExercise,
-  deleteExercise,
-  getExercise,
-  listExercises,
-} from '@/db/repos/exercises';
+import { createExercise, deleteExercise, getExercise, listExercises } from '@/db/repos/exercises';
 import { buildImportPlan, importWorkouts } from '@/db/repos/importNotes';
 import { kvGet, kvSet } from '@/db/repos/kv';
 import {
@@ -30,14 +25,9 @@ import {
 } from '@/db/repos/nutrition';
 import { activityByDay, analyzeTrainingHistory, muscleSetCounts, weeklyTraining } from '@/db/repos/stats';
 import { listTemplates, saveTemplate, templateFromWorkout } from '@/db/repos/templates';
-import {
-  deleteWorkout,
-  getExerciseContext,
-  getWorkout,
-  listWorkoutSummaries,
-  saveWorkout,
-} from '@/db/repos/workouts';
+import { deleteWorkout, getExerciseContext, getWorkout, listWorkoutSummaries, saveWorkout } from '@/db/repos/workouts';
 import { SEED_EXERCISES } from '@/db/seed/exercises';
+import { seedDemoData } from '@/dev/demoData';
 import { SEED_FOODS } from '@/db/seed/foods';
 import { db } from '@/db/sql';
 import { dateKeyWithTime } from '@/domain/dates';
@@ -267,13 +257,20 @@ describe('import of the user notes', () => {
     const summary = (await listWorkoutSummaries())[0];
     // Volume: per side exercises count double, bar weight of the curl bar is unknown
     const expected =
-      10 * 40 * 3 + 10 * 50 + // Schräg-Brustmaschine
-      10 * 30 * 2 + 10 * 40 * 2 + // Brustmaschine
-      8 * 55 + 8 * 45 + 10 * 35 + // Butterfly
+      10 * 40 * 3 +
+      10 * 50 + // Schräg-Brustmaschine
+      10 * 30 * 2 +
+      10 * 40 * 2 + // Brustmaschine
+      8 * 55 +
+      8 * 45 +
+      10 * 35 + // Butterfly
       2 * (10 * 15 + 12 * 15 + 8 * 20) + // Crossover pro Seite
       2 * (12 * 10 + 12 * 12.5 + 12 * 15) + // Bizeps pro Seite
-      12 * 35 + 12 * 40 * 2 + // Hammercurls
-      15 * 30 + 15 * 40 + 15 * 50; // Bauchmaschine
+      12 * 35 +
+      12 * 40 * 2 + // Hammercurls
+      15 * 30 +
+      15 * 40 +
+      15 * 50; // Bauchmaschine
     expect(summary.volume).toBe(expected);
 
     // A second import finds the existing workout as possible duplicate
@@ -418,5 +415,22 @@ describe('backup', () => {
     await saveWorkout(workout('w1', '2026-09-10', [[10, 62.5]]));
     const workoutsCsv = await exportWorkoutsCsv();
     expect(workoutsCsv).toContain('Bankdrücken (Langhantel);1;10;62,5');
+  });
+});
+
+describe('demo data (web preview)', () => {
+  test('seeds consistent sample data', async () => {
+    await seedDemoData();
+    const summaries = await listWorkoutSummaries();
+    expect(summaries.length).toBeGreaterThan(15);
+    expect(summaries.every((s) => s.exerciseCount > 0 && s.setCount > 0)).toBe(true);
+    expect((await listTemplates()).map((t) => t.name).sort()).toEqual([
+      'Beine, Schultern',
+      'Brust, Bizeps, Bauch',
+      'Rücken, Trizeps',
+    ]);
+    expect((await listWeights()).length).toBeGreaterThan(50);
+    const { prs } = await analyzeTrainingHistory();
+    expect(prs.length).toBeGreaterThan(0);
   });
 });

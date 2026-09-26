@@ -25,9 +25,7 @@ interface TemplateExerciseRow {
 
 export async function listTemplates(): Promise<Template[]> {
   const database = db();
-  const rows = await database.getAllAsync<TemplateRow>(
-    'SELECT * FROM templates ORDER BY position, created_at',
-  );
+  const rows = await database.getAllAsync<TemplateRow>('SELECT * FROM templates ORDER BY position, created_at');
   const exerciseRows = await database.getAllAsync<TemplateExerciseRow>(
     `SELECT te.* FROM template_exercises te
        JOIN exercises e ON e.id = te.exercise_id

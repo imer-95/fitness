@@ -28,9 +28,7 @@ export function movingAverage(entries: readonly DatedValue[], windowDays = 7): D
 }
 
 /** Least-squares line through the points (x = days since the first point). */
-export function linearTrend(
-  points: readonly DatedValue[],
-): { slopePerDay: number; intercept: number } | null {
+export function linearTrend(points: readonly DatedValue[]): { slopePerDay: number; intercept: number } | null {
   if (points.length < 2) return null;
   const x0 = points[0].date;
   const n = points.length;
@@ -55,11 +53,7 @@ export function linearTrend(
  * Average change per week (kg/week) over the last `days` days.
  * Needs at least 3 entries spanning 7 days, otherwise `null`.
  */
-export function weeklyRate(
-  entries: readonly DatedValue[],
-  today: DateKey = todayKey(),
-  days = 28,
-): number | null {
+export function weeklyRate(entries: readonly DatedValue[], today: DateKey = todayKey(), days = 28): number | null {
   const from = addDays(today, -days);
   const recent = entries.filter((e) => e.date > from && e.date <= today);
   if (recent.length < 3) return null;

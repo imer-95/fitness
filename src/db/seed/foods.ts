@@ -32,7 +32,7 @@ type Row = [
  */
 const CATEGORIES: Record<string, Row[]> = {
   'Getreide & Beilagen': [
-    ['food-oats', 'Haferflocken', 'g', 372, 13.5, 58.7, 7, 50, 'Portion (50 g)'],
+    ['food-oats', 'Haferflocken', 'g', 372, 13.5, 58.7, 7, 50, 'Portion'],
     ['food-wholegrain-bread', 'Vollkornbrot', 'g', 220, 7.3, 38, 1.9, 50, 'Scheibe'],
     ['food-mixed-bread', 'Mischbrot', 'g', 230, 6.8, 45, 1.3, 45, 'Scheibe'],
     ['food-toast', 'Toastbrot', 'g', 260, 8, 48, 3.5, 25, 'Scheibe'],

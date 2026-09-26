@@ -10,6 +10,7 @@ import {
   weeklyRate,
 } from '@/domain/body';
 import { estimateCardioKcal, metFor, paceSecPerKm, speedKmh } from '@/domain/cardio';
+import { analyzeHistory, weeklyStreak } from '@/domain/stats';
 import {
   addDays,
   addMonths,
@@ -73,12 +74,7 @@ describe('dates', () => {
     expect(diffDays('2026-10-26', '2026-10-24')).toBe(2);
     expect(addMonths('2026-01-31', 1)).toBe('2026-02-28');
     expect(addMonths('2026-01-15', -2)).toBe('2025-11-15');
-    expect(eachDay('2026-09-29', '2026-10-02')).toEqual([
-      '2026-09-29',
-      '2026-09-30',
-      '2026-10-01',
-      '2026-10-02',
-    ]);
+    expect(eachDay('2026-09-29', '2026-10-02')).toEqual(['2026-09-29', '2026-09-30', '2026-10-01', '2026-10-02']);
     expect(isDateKey('2026-02-29')).toBe(false);
     expect(isDateKey('2024-02-29')).toBe(true);
   });
@@ -170,27 +166,23 @@ describe('strength', () => {
     expect(bests.maxWeight).toBe(50);
     expect(bests.maxE1rm).toBeCloseTo(66.67, 2);
     expect(bests.maxReps).toBe(10);
-    expect(detectPrs({ reps: 8, weight: 52.5, durationSec: null, kind: 'normal' }, bests, 'weight_reps')).toEqual(
-      ['weight'],
-    );
+    expect(detectPrs({ reps: 8, weight: 52.5, durationSec: null, kind: 'normal' }, bests, 'weight_reps')).toEqual([
+      'weight',
+    ]);
     expect(detectPrs({ reps: 12, weight: 50, durationSec: null, kind: 'normal' }, bests, 'weight_reps')).toEqual([
       'e1rm',
     ]);
-    expect(detectPrs({ reps: 10, weight: 50, durationSec: null, kind: 'normal' }, bests, 'weight_reps')).toEqual(
-      [],
-    );
-    expect(detectPrs({ reps: 20, weight: 70, durationSec: null, kind: 'warmup' }, bests, 'weight_reps')).toEqual(
-      [],
-    );
+    expect(detectPrs({ reps: 10, weight: 50, durationSec: null, kind: 'normal' }, bests, 'weight_reps')).toEqual([]);
+    expect(detectPrs({ reps: 20, weight: 70, durationSec: null, kind: 'warmup' }, bests, 'weight_reps')).toEqual([]);
     // No history -> no record
     expect(
-      detectPrs(
-        { reps: 10, weight: 40, durationSec: null, kind: 'normal' },
-        computeBests([], machine),
-        'weight_reps',
-      ),
+      detectPrs({ reps: 10, weight: 40, durationSec: null, kind: 'normal' }, computeBests([], machine), 'weight_reps'),
     ).toEqual([]);
-    const repsBests = mergeBests(computeBests([], machine), { reps: 12, weight: null, durationSec: null, kind: 'normal' }, machine);
+    const repsBests = mergeBests(
+      computeBests([], machine),
+      { reps: 12, weight: null, durationSec: null, kind: 'normal' },
+      machine,
+    );
     expect(detectPrs({ reps: 13, weight: null, durationSec: null, kind: 'normal' }, repsBests, 'reps')).toEqual([
       'reps',
     ]);
@@ -199,9 +191,9 @@ describe('strength', () => {
   test('formats sets', () => {
     expect(formatSet({ reps: 10, weight: 40, durationSec: null, kind: 'normal' }, 'weight_reps')).toBe('10 × 40 kg');
     expect(formatSet({ reps: 12, weight: null, durationSec: null, kind: 'normal' }, 'reps')).toBe('12 Wdh.');
-    expect(
-      formatSet({ reps: 10, weight: 12.5, durationSec: null, kind: 'normal', side: 'left' }, 'weight_reps'),
-    ).toBe('10 × 12,5 kg (L)');
+    expect(formatSet({ reps: 10, weight: 12.5, durationSec: null, kind: 'normal', side: 'left' }, 'weight_reps')).toBe(
+      '10 × 12,5 kg (L)',
+    );
     expect(formatSet({ reps: null, weight: null, durationSec: 45, kind: 'normal' }, 'time')).toBe('45 s');
   });
 
@@ -332,5 +324,43 @@ describe('cardio', () => {
     // 9.8 MET * 80 kg * 0.5 h = 392
     expect(estimateCardioKcal('running', 1800, 5, 80)).toBe(392);
     expect(estimateCardioKcal('running', 1800, 5, null)).toBeNull();
+  });
+});
+
+describe('history analysis', () => {
+  const config = {
+    tracking: 'weight_reps' as const,
+    weightMode: 'total' as const,
+    barMode: 'none' as const,
+    barWeight: null,
+  };
+  const set = (workoutId: string, startedAt: number, reps: number, weight: number) => ({
+    workoutId,
+    startedAt,
+    exerciseId: 'ex',
+    reps,
+    weight,
+    durationSec: null,
+    kind: 'normal' as const,
+  });
+
+  test('the first session of an exercise sets no records, later sessions do', () => {
+    const { prs, progress } = analyzeHistory(
+      [set('w1', 1, 10, 40), set('w1', 1, 10, 50), set('w2', 2, 10, 50), set('w2', 2, 8, 55), set('w2', 2, 8, 57.5)],
+      new Map([['ex', config]]),
+    );
+    expect(prs.filter((p) => p.workoutId === 'w1')).toEqual([]);
+    expect(prs.filter((p) => p.type === 'weight')).toEqual([
+      expect.objectContaining({ workoutId: 'w2', value: 57.5, reps: 8 }),
+    ]);
+    expect(progress.get('ex')?.sessions).toBe(2);
+  });
+
+  test('weekly streak counts weeks that reached the goal', () => {
+    const days = ['2026-09-01', '2026-09-03', '2026-09-08', '2026-09-10', '2026-09-15', '2026-09-22', '2026-09-24'];
+    // Weeks: 31.08 (2), 07.09 (2), 14.09 (1), 21.09 (2, current)
+    expect(weeklyStreak(days, 2, '2026-09-26')).toBe(1);
+    expect(weeklyStreak(days, 1, '2026-09-26')).toBe(4);
+    expect(weeklyStreak(days, 3, '2026-09-26')).toBe(0);
   });
 });

@@ -23,7 +23,7 @@ export const MUSCLE_LABELS: Record<MuscleGroup, string> = {
   triceps: 'Trizeps',
   forearms: 'Unterarme',
   abs: 'Bauch',
-  quads: 'Oberschenkel vorne',
+  quads: 'Oberschenkel',
   hamstrings: 'Beinbeuger',
   glutes: 'Gesäß',
   calves: 'Waden',
@@ -233,13 +233,7 @@ export const ACTIVITY_DESCRIPTIONS: Record<ActivityLevel, string> = {
   very_active: 'Tägliches hartes Training oder körperliche Arbeit',
 };
 
-export const ACTIVITY_ORDER: ActivityLevel[] = [
-  'sedentary',
-  'light',
-  'moderate',
-  'active',
-  'very_active',
-];
+export const ACTIVITY_ORDER: ActivityLevel[] = ['sedentary', 'light', 'moderate', 'active', 'very_active'];
 
 export const GOAL_LABELS: Record<Goal, string> = {
   lose: 'Abnehmen',

@@ -21,15 +21,7 @@ import { daysInMonth, formatDateShort, makeKey, splitKey, todayKey } from './dat
 import { formatNumber } from './format';
 import { MUSCLE_SHORT } from './labels';
 import { SIDE_LABELS, weightAnnotation } from './strength';
-import type {
-  BarMode,
-  DateKey,
-  Equipment,
-  MuscleGroup,
-  Side,
-  TrackingType,
-  WeightMode,
-} from './types';
+import type { BarMode, DateKey, Equipment, MuscleGroup, Side, TrackingType, WeightMode } from './types';
 
 export interface ParsedSet {
   reps: number | null;
@@ -112,7 +104,8 @@ const REST_WORD = /\b(pause|rest|ruhe|erholung|satzpause)\b/i;
 
 const PER_SIDE = /\b(?:pro|je)\s+(?:seite|hand|arm|bein)\b/i;
 const BAR_INCLUDED = /\b(?:inkl\.?|inklusive|incl\.?|mit)\s*(?:der\s+)?(?:stange|langhantel|sz-?stange|bar)\b/i;
-const BAR_EXCLUDED = /\b(?:exkl\.?|exklusive|excl\.?|ohne|zzgl\.?|plus)\s*(?:der\s+)?(?:stange|langhantel|sz-?stange|bar)\b/i;
+const BAR_EXCLUDED =
+  /\b(?:exkl\.?|exklusive|excl\.?|ohne|zzgl\.?|plus)\s*(?:der\s+)?(?:stange|langhantel|sz-?stange|bar)\b/i;
 const SIDE_LEFT = /(?:^|\s|\()(?:links|li\.?|l)(?=$|\s|\)|,)/i;
 const SIDE_RIGHT = /(?:^|\s|\()(?:rechts|re\.?|r)(?=$|\s|\)|,)/i;
 
@@ -153,7 +146,10 @@ function inferDate(dayRaw: string, monthRaw: string, yearRaw: string | undefined
 }
 
 function cleanTitle(rest: string): string | null {
-  const t = rest.replace(/^[\s:\-–|,.]+/, '').replace(/[\s:\-–|,]+$/, '').trim();
+  const t = rest
+    .replace(/^[\s:\-–|,.]+/, '')
+    .replace(/[\s:\-–|,]+$/, '')
+    .trim();
   return t ? t : null;
 }
 
@@ -555,12 +551,7 @@ const MUSCLE_KEYWORDS: [RegExp, MuscleGroup][] = [
 
 /** Guesses the primary muscle group from a (German or English) exercise name. */
 export function guessMuscle(name: string): MuscleGroup {
-  const n = name
-    .toLowerCase()
-    .replace(/ä/g, 'ae')
-    .replace(/ö/g, 'oe')
-    .replace(/ü/g, 'ue')
-    .replace(/ß/g, 'ss');
+  const n = name.toLowerCase().replace(/ä/g, 'ae').replace(/ö/g, 'oe').replace(/ü/g, 'ue').replace(/ß/g, 'ss');
   for (const [re, muscle] of MUSCLE_KEYWORDS) {
     if (re.test(n)) return muscle;
   }

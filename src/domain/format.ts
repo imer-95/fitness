@@ -127,3 +127,11 @@ export function average(values: readonly number[]): number | null {
 export function pluralize(count: number, singular: string, plural: string): string {
   return `${formatNumber(count, 0)} ${count === 1 ? singular : plural}`;
 }
+
+const CURRENCY_SYMBOLS: Record<string, string> = { EUR: '€', USD: '$', GBP: '£', CHF: 'CHF' };
+
+/** "3,33 €" – amounts computed by the app (store prices come preformatted). */
+export function formatCurrency(amount: number, currency: string | null | undefined): string {
+  const code = (currency || 'EUR').toUpperCase();
+  return `${formatNumber(amount, 2, 2)} ${CURRENCY_SYMBOLS[code] ?? code}`;
+}

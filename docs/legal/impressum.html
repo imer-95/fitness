@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Impressum – Formkurve</title>
+    <style>
+:root { color-scheme: light dark; --bg: #f3f4f7; --card: #ffffff; --text: #11141a; --muted: #5a616e; --accent: #e54a1f; --border: #e3e6eb; }
+@media (prefers-color-scheme: dark) { :root { --bg: #0b0c0f; --card: #16181d; --text: #f3f4f6; --muted: #a4aab6; --accent: #ff835c; --border: #252931; } }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--text); font: 16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+header, main, footer { max-width: 760px; margin: 0 auto; padding: 0 20px; }
+header { padding-top: 28px; display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 20px; }
+header .brand { font-weight: 800; font-size: 20px; color: var(--accent); text-decoration: none; margin-right: auto; }
+nav a { color: var(--muted); text-decoration: none; margin-right: 14px; font-weight: 600; font-size: 15px; }
+nav a[aria-current="page"] { color: var(--text); }
+main { background: var(--card); border: 1px solid var(--border); border-radius: 18px; padding: 8px 28px 24px; margin-top: 20px; }
+h1 { font-size: 30px; line-height: 1.2; margin: 24px 0 8px; }
+h2 { font-size: 19px; margin: 28px 0 6px; }
+p, ul { margin: 8px 0; }
+ul { padding-left: 22px; }
+li { margin: 4px 0; }
+a { color: var(--accent); overflow-wrap: anywhere; }
+.intro { color: var(--muted); font-size: 17px; }
+.notice { background: #fef3c7; color: #6b4a00; border-radius: 12px; padding: 10px 14px; font-size: 15px; }
+footer { color: var(--muted); font-size: 14px; padding-top: 16px; padding-bottom: 40px; }
+@media (max-width: 520px) { main { padding: 4px 18px 18px; border-radius: 14px; } h1 { font-size: 26px; } }
+    </style>
+  </head>
+  <body>
+    <header>
+      <a class="brand" href="index.html">Formkurve</a>
+      <nav>
+      <a href="index.html">Übersicht</a>
+      <a href="datenschutz.html">Datenschutz</a>
+      <a href="nutzungsbedingungen.html">Nutzungsbedingungen</a>
+      <a href="impressum.html" aria-current="page">Impressum</a>
+      </nav>
+    </header>
+    <main>
+      <p class="notice">Vorlage: Name, Anschrift und Kontaktdaten sind noch nicht eingetragen.</p>
+      <h1>Impressum</h1>
+      <h2>Angaben gemäß § 5 DDG</h2>
+      <p>[Vorname Nachname]<br />
+      [Straße Hausnummer]<br />
+      [PLZ Ort]<br />
+      Deutschland</p>
+      <h2>Kontakt</h2>
+      <p>E-Mail: [E-Mail-Adresse]<br />
+      Telefon: [Telefonnummer]</p>
+      <h2>Verbraucherstreitbeilegung</h2>
+      <p>Wir sind nicht bereit und nicht verpflichtet, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen.</p>
+      <h2>Quellen und Lizenzen</h2>
+      <p>Produktdaten stammen aus der freien Datenbank Open Food Facts (<a href="https://world.openfoodfacts.org">https://world.openfoodfacts.org</a>) und stehen unter der Open Database License (ODbL). Die App verwendet Open-Source-Software, unter anderem React Native, Expo und sql.js (MIT-Lizenz).</p>
+    </main>
+    <footer>Stand: 26. September 2026 · Diese Seite verwendet keine Cookies, keine Skripte und keine externen Inhalte.</footer>
+  </body>
+</html>

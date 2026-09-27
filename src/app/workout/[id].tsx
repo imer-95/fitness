@@ -11,6 +11,7 @@ import { useQuery } from '@/db/useQuery';
 import { formatDateLong, formatDuration, formatTime, toDateKey } from '@/domain/dates';
 import { formatVolume } from '@/domain/format';
 import { setVolume } from '@/domain/strength';
+import { requirePlanSlot } from '@/features/pro';
 import { editWorkout, repeatWorkout } from '@/features/workoutActions';
 import { copyWorkout, shareWorkout } from '@/features/shareWorkout';
 import { toast } from '@/state/ui';
@@ -73,6 +74,7 @@ export default function WorkoutDetailScreen() {
         await repeatWorkout(w);
         break;
       case 'template': {
+        if (!(await requirePlanSlot())) break;
         const template = templateFromWorkout(w, w.title || 'Mein Plan', await nextTemplatePosition());
         await saveTemplate(template);
         toast('Als Plan gespeichert', { message: 'Du findest ihn im Tab „Training“.' });

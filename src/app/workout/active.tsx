@@ -17,6 +17,7 @@ import { useNow } from '@/hooks/useNow';
 import { haptics } from '@/services/haptics';
 import { ensureNotificationPermission } from '@/services/notifications';
 import { draftStats, effectiveValues, useActiveWorkout, type DraftExercise } from '@/state/activeWorkout';
+import { useIsPro } from '@/state/pro';
 import { useRestTimer } from '@/state/restTimer';
 import { useSettings } from '@/state/settings';
 import { toast, useExercisePicker } from '@/state/ui';
@@ -41,6 +42,7 @@ export default function ActiveWorkoutScreen() {
   const insets = useSafeAreaInsets();
   const draft = useActiveWorkout((s) => s.draft);
   const keepAwake = useSettings((s) => s.prefs.keepAwake);
+  const isPro = useIsPro();
   const restRunning = useRestTimer((s) => s.endAt != null);
   const editing = !!draft?.editingId;
   const now = useNow(1000, !!draft && !editing);
@@ -345,7 +347,7 @@ export default function ActiveWorkoutScreen() {
             item={ex}
             exercise={exerciseMap.get(ex.exerciseId)}
             showNotes={notesOpen.includes(ex.id) || ex.notes.length > 0}
-            showSuggestion={!editing}
+            showSuggestion={!editing && isPro}
             onMenu={() => setExerciseMenu(ex.id)}
             onOpenRest={() => setRestFor(ex.id)}
             onChangeSet={(setId, patch) => store.updateSet(ex.id, setId, patch)}

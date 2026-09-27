@@ -28,6 +28,9 @@ jobs:
       - name: Formatting
         run: npm run format:check
 
+      - name: Legal pages up to date
+        run: npm run legal:check
+
       - name: Unit tests
         run: npm test -- --ci
 

@@ -8,6 +8,7 @@ import { ALL_TABLES, emitChange } from '../events';
 import { SCHEMA_VERSION } from '../migrations';
 import { seedDatabase } from '../seed';
 import { db, type SqlValue } from '../sql';
+import { DEVICE_ONLY_KEYS } from './kv';
 
 /** Tables in foreign-key order (parents first). */
 export const BACKUP_TABLES = [
@@ -39,7 +40,8 @@ export interface BackupFile {
 export async function createBackup(): Promise<BackupFile> {
   const tables: BackupFile['tables'] = {};
   for (const table of BACKUP_TABLES) {
-    tables[table] = await db().getAllAsync<Record<string, SqlValue>>(`SELECT * FROM ${table}`);
+    const rows = await db().getAllAsync<Record<string, SqlValue>>(`SELECT * FROM ${table}`);
+    tables[table] = table === 'kv' ? rows.filter((r) => !DEVICE_ONLY_KEYS.includes(String(r.key))) : rows;
   }
   return {
     app: 'formkurve',

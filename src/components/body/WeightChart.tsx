@@ -3,9 +3,13 @@ import { useMemo } from 'react';
 import { currentTrend, movingAverage, projectGoalDate, trendChange, weeklyRate } from '@/domain/body';
 import { addDays, formatDayMonth, todayKey } from '@/domain/dates';
 import { formatNumber } from '@/domain/format';
+import { isProWeightRange } from '@/domain/pro';
 import type { DateKey, WeightEntry } from '@/domain/types';
+import { openPaywall } from '@/features/pro';
+import { useIsPro } from '@/state/pro';
 import { LineChart } from '@/ui/charts/LineChart';
 import { dayFromNumber, dayNumber } from '@/ui/charts/scale';
+import { Segmented } from '@/ui/Chips';
 import { useTheme, withAlpha } from '@/ui/theme';
 
 export type WeightRange = '30' | '90' | '365' | 'all';
@@ -16,6 +20,24 @@ export const WEIGHT_RANGES: { value: WeightRange; label: string }[] = [
   { value: '365', label: '1 J' },
   { value: 'all', label: 'Alle' },
 ];
+
+/** Range selector; one year and "all" are part of Pro. */
+export function WeightRangePicker({ value, onChange }: { value: WeightRange; onChange: (range: WeightRange) => void }) {
+  const isPro = useIsPro();
+  const options = WEIGHT_RANGES.map((o) => ({ ...o, locked: !isPro && isProWeightRange(o.value) }));
+  return (
+    <Segmented<WeightRange>
+      options={options}
+      value={value}
+      onChange={(range) => (!isPro && isProWeightRange(range) ? openPaywall('longTermWeight') : onChange(range))}
+    />
+  );
+}
+
+/** The range that is actually shown (falls back when Pro is no longer active). */
+export function visibleWeightRange(range: WeightRange, isPro: boolean): WeightRange {
+  return !isPro && isProWeightRange(range) ? '90' : range;
+}
 
 export interface WeightStats {
   latest: WeightEntry | null;

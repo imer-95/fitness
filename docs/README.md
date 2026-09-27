@@ -11,6 +11,13 @@ Willkommen in der Dokumentation von Formkurve. Die Dokumente sind nach Zielgrupp
 | [Installation & Build](installation-und-build.md) | App auf iPhone und Android installieren, eigene Builds, Updates           |
 | [Berechnungen](berechnungen.md)                   | Wie 1RM, Volumen, Gewichtstrend, Kalorienbedarf und Cardio-kcal entstehen |
 
+## Für die Veröffentlichung
+
+| Dokument                                                         | Inhalt                                                                                    |
+| ---------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| [Monetarisierung, Recht & Steuern](monetarisierung-und-recht.md) | Pro-Abo im Play Store, Datenschutz, Impressum, Gewerbe und Steuern – mit Checkliste       |
+| [Rechtstexte (Website)](legal/index.html)                        | Datenschutzerklärung, Nutzungsbedingungen, Impressum – erzeugt aus `src/legal/content.ts` |
+
 ## Für die Weiterentwicklung
 
 | Dokument                      | Inhalt                                                                   |

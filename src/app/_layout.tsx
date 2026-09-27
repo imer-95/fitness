@@ -13,6 +13,7 @@ import { openDatabase } from '@/db/open';
 import { registerDemoData } from '@/dev/registerDemo';
 import { configureNotifications } from '@/services/notifications';
 import { useActiveWorkout } from '@/state/activeWorkout';
+import { usePro } from '@/state/pro';
 import { useSettings } from '@/state/settings';
 import { Button } from '@/ui/Button';
 import { DialogHost } from '@/ui/dialogs';
@@ -34,8 +35,11 @@ function startApp(): Promise<void> {
     await initializeDatabase(database);
     await useSettings.getState().hydrate();
     await useActiveWorkout.getState().hydrate();
+    await usePro.getState().hydrate();
     configureNotifications();
     registerDemoData();
+    // Connects to Google Play / the App Store in the background.
+    usePro.getState().start();
   })();
   return startup;
 }
@@ -146,6 +150,8 @@ function AppNavigator() {
           <Stack.Screen name="settings/data" options={{ title: 'Daten & Backup' }} />
           <Stack.Screen name="tools/one-rep-max" options={{ title: '1RM-Rechner' }} />
           <Stack.Screen name="tools/plates" options={{ title: 'Scheibenrechner' }} />
+          <Stack.Screen name="pro" options={{ title: 'Formkurve Pro', presentation: 'modal', headerShown: false }} />
+          <Stack.Screen name="legal/[doc]" options={{ title: 'Rechtliches' }} />
         </Stack>
         <ToastHost />
         <DialogHost />

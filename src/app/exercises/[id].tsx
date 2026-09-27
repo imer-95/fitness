@@ -2,6 +2,7 @@ import { router, Stack, useLocalSearchParams } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
+import { ProTeaser } from '@/components/pro/ProComponents';
 import { getExercise } from '@/db/repos/exercises';
 import { getExerciseHistory } from '@/db/repos/workouts';
 import { useQuery } from '@/db/useQuery';
@@ -19,6 +20,7 @@ import {
   setVolume,
   weightAnnotation,
 } from '@/domain/strength';
+import { useIsPro } from '@/state/pro';
 import { IconButton } from '@/ui/Button';
 import { Card } from '@/ui/Card';
 import { LineChart } from '@/ui/charts/LineChart';
@@ -36,6 +38,7 @@ type Metric = 'e1rm' | 'weight' | 'volume' | 'reps' | 'duration';
 export default function ExerciseDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { colors } = useTheme();
+  const isPro = useIsPro();
   const exercise = useQuery(() => getExercise(id), [id], ['exercises']);
   const history = useQuery(() => getExerciseHistory(id), [id], ['workouts']);
   const ex = exercise.data;
@@ -178,40 +181,44 @@ export default function ExerciseDetailScreen() {
         />
       </StatGrid>
 
-      <Card style={styles.gap}>
-        <Txt variant="headline">Entwicklung</Txt>
-        {tracking === 'weight_reps' ? (
-          <Segmented<Metric>
-            options={[
-              { value: 'e1rm', label: '1RM' },
-              { value: 'weight', label: 'Gewicht' },
-              { value: 'volume', label: 'Volumen' },
-            ]}
-            value={activeMetric}
-            onChange={setMetric}
-          />
-        ) : null}
-        {points.length > 0 ? (
-          <LineChart
-            series={[{ key: 'm', points, color: colors.primary, dots: true, area: true }]}
-            formatY={(v) => formatNumber(v, v < 10 ? 1 : 0)}
-            formatX={(x) => formatDayMonth(dayFromNumber(x))}
-            formatTooltip={(p) => `${formatNumber(p.y, 1)} ${unit} · ${formatDayMonth(dayFromNumber(p.x))}`}
-            minYRange={activeMetric === 'volume' ? 100 : 5}
-          />
-        ) : (
-          <Txt variant="footnote" color="textSecondary">
-            Noch keine Daten – absolviere diese Übung in einem Training.
+      {!isPro ? (
+        <ProTeaser feature="exerciseCharts" />
+      ) : (
+        <Card style={styles.gap}>
+          <Txt variant="headline">Entwicklung</Txt>
+          {tracking === 'weight_reps' ? (
+            <Segmented<Metric>
+              options={[
+                { value: 'e1rm', label: '1RM' },
+                { value: 'weight', label: 'Gewicht' },
+                { value: 'volume', label: 'Volumen' },
+              ]}
+              value={activeMetric}
+              onChange={setMetric}
+            />
+          ) : null}
+          {points.length > 0 ? (
+            <LineChart
+              series={[{ key: 'm', points, color: colors.primary, dots: true, area: true }]}
+              formatY={(v) => formatNumber(v, v < 10 ? 1 : 0)}
+              formatX={(x) => formatDayMonth(dayFromNumber(x))}
+              formatTooltip={(p) => `${formatNumber(p.y, 1)} ${unit} · ${formatDayMonth(dayFromNumber(p.x))}`}
+              minYRange={activeMetric === 'volume' ? 100 : 5}
+            />
+          ) : (
+            <Txt variant="footnote" color="textSecondary">
+              Noch keine Daten – absolviere diese Übung in einem Training.
+            </Txt>
+          )}
+          <Txt variant="caption" color="textTertiary">
+            {activeMetric === 'e1rm'
+              ? 'Geschätztes Maximalgewicht für eine Wiederholung (Epley-Formel) – bester Satz je Training.'
+              : activeMetric === 'volume'
+                ? 'Wiederholungen × Gewicht aller Sätze je Training.'
+                : `${TRACKING_LABELS[tracking]} – bester Satz je Training.`}
           </Txt>
-        )}
-        <Txt variant="caption" color="textTertiary">
-          {activeMetric === 'e1rm'
-            ? 'Geschätztes Maximalgewicht für eine Wiederholung (Epley-Formel) – bester Satz je Training.'
-            : activeMetric === 'volume'
-              ? 'Wiederholungen × Gewicht aller Sätze je Training.'
-              : `${TRACKING_LABELS[tracking]} – bester Satz je Training.`}
-        </Txt>
-      </Card>
+        </Card>
+      )}
 
       <Section title="Verlauf">
         {sessions.length === 0 ? (

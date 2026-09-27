@@ -15,20 +15,23 @@ Empfohlen: Node.js 22, Visual Studio Code mit den Erweiterungen **ESLint** und *
 
 ## Befehle
 
-| Befehl                 | Zweck                                                                       |
-| ---------------------- | --------------------------------------------------------------------------- |
-| `npm start`            | Entwicklungsserver (Expo Go, Simulator, Web)                                |
-| `npm run ios`          | Start im iOS-Simulator (macOS mit Xcode)                                    |
-| `npm run android`      | Start im Android-Emulator oder auf einem per USB verbundenen Gerät          |
-| `npm run web`          | Web-Vorschau                                                                |
-| `npm test`             | alle Tests (Jest)                                                           |
-| `npx jest notes`       | nur Tests, deren Dateiname „notes“ enthält                                  |
-| `npx jest --watch`     | Tests bei jeder Änderung erneut ausführen                                   |
-| `npm run typecheck`    | TypeScript-Prüfung (`tsc --noEmit`)                                         |
-| `npm run lint`         | ESLint inkl. React-Hooks- und React-Compiler-Regeln                         |
-| `npm run format`       | alle Dateien mit Prettier formatieren                                       |
-| `npm run format:check` | prüfen, ob alles formatiert ist                                             |
-| `npm run check`        | Typen, Lint, Formatierung und Tests in einem Schritt – **vor jedem Commit** |
+| Befehl                  | Zweck                                                                                            |
+| ----------------------- | ------------------------------------------------------------------------------------------------ |
+| `npm start`             | Entwicklungsserver (Expo Go, Simulator, Web)                                                     |
+| `npm run ios`           | Start im iOS-Simulator (macOS mit Xcode)                                                         |
+| `npm run android`       | Start im Android-Emulator oder auf einem per USB verbundenen Gerät                               |
+| `npm run web`           | Web-Vorschau                                                                                     |
+| `npm test`              | alle Tests (Jest)                                                                                |
+| `npx jest notes`        | nur Tests, deren Dateiname „notes“ enthält                                                       |
+| `npx jest --watch`      | Tests bei jeder Änderung erneut ausführen                                                        |
+| `npm run typecheck`     | TypeScript-Prüfung (`tsc --noEmit`)                                                              |
+| `npm run lint`          | ESLint inkl. React-Hooks- und React-Compiler-Regeln                                              |
+| `npm run format`        | alle Dateien mit Prettier formatieren                                                            |
+| `npm run format:check`  | prüfen, ob alles formatiert ist                                                                  |
+| `npm run check`         | Typen, Lint, Formatierung, Rechtsseiten und Tests – **vor jedem Commit**                         |
+| `npm run legal:pages`   | Webseiten der Rechtstexte in `docs/legal` neu erzeugen                                           |
+| `npm run legal:check`   | prüfen, ob die Webseiten zu `src/legal/content.ts` passen                                        |
+| `npm run release:check` | wie `check`, bricht zusätzlich bei Platzhaltern im Impressum ab – **vor jeder Veröffentlichung** |
 
 ## Tests
 
@@ -40,6 +43,8 @@ Die Tests liegen in [`src/__tests__`](../src/__tests__) und laufen mit `jest-exp
 | `domain.test.ts`        | Berechnungen: 1RM, Volumen, Rekorde, Steigerungs-Tipp, Scheiben, Trend, Prognose, BMI, Kalorienbedarf, Makros, MET, Formatierung, Datumslogik                                                                  |
 | `openFoodFacts.test.ts` | Umwandlung von Open-Food-Facts-Produkten, EAN-Prüfziffer                                                                                                                                                       |
 | `db.test.ts`            | Migrationen, Startdaten, alle Repositories, Import der Notizen, Statistiken, Backup/Wiederherstellung, CSV-Export, Beispieldaten                                                                               |
+| `pro.test.ts`           | Pro-Funktionen, Planlimit, Abrechnungszeiträume, Tarife aus Google-Play- und App-Store-Daten, Ersparnis, Berechtigung, Offline-Cache                                                                           |
+| `legal.test.ts`         | Pflichtangaben in Impressum, Datenschutzerklärung und Nutzungsbedingungen, Erkennung von Links und Platzhaltern                                                                                                |
 
 Die Datenbanktests verwenden sql.js mit einer In-Memory-Datenbank
 ([`helpers/testDb.ts`](../src/__tests__/helpers/testDb.ts)). Migrationen, Startdaten und SQL laufen dadurch genau wie
@@ -144,6 +149,24 @@ const { chromium } = require('playwright');
 })();
 ```
 
+## Pro-Funktionen entwickeln und testen
+
+- Neue Pro-Funktion: in `PRO_FEATURES` ([`src/domain/pro.ts`](../src/domain/pro.ts)) eintragen (erscheint dann in der
+  Paywall), ein Symbol in `PRO_FEATURE_ICONS` ergänzen und im Bildschirm `useIsPro()` bzw. `requirePro('…')` verwenden.
+  Für gesperrte Bereiche gibt es `<ProTeaser feature="…" />`.
+- **Pro simulieren**: In Entwicklungs-Builds und in der Web-Vorschau hat die Paywall (`/pro`) einen Schalter „Pro
+  simulieren“.
+- **Beispiel-Tarife** in der Web-Vorschau (für Screenshots der Paywall): Paywall öffnen und in der Konsole
+  `window.__formkurveDemoPlans()` aufrufen.
+- **Echte Testkäufe** nur mit einem Build aus dem internen Test-Track und einem Lizenztest-Konto (siehe
+  [Monetarisierung](monetarisierung-und-recht.md#2-google-play-schritt-für-schritt)).
+
+## Rechtstexte ändern
+
+1. Text in [`src/legal/content.ts`](../src/legal/content.ts) ändern und `LEGAL_UPDATED` anpassen.
+2. `npm run legal:pages` ausführen und die geänderten Dateien in `docs/legal` mit committen.
+3. Die CI schlägt fehl, wenn Schritt 2 vergessen wurde.
+
 ## Continuous Integration
 
 [`.github/workflows/ci.yml`](../.github/workflows/ci.yml) läuft bei jedem Push und Pull Request:
@@ -152,8 +175,9 @@ const { chromium } = require('playwright');
 2. `npm run typecheck`
 3. `npm run lint`
 4. `npm run format:check`
-5. `npm test -- --ci`
-6. `npx expo export` für iOS, Android und Web – stellt sicher, dass sich die App für alle Plattformen bündeln lässt.
+5. `npm run legal:check` – sind die Webseiten der Rechtstexte aktuell?
+6. `npm test -- --ci`
+7. `npx expo export` für iOS, Android und Web – stellt sicher, dass sich die App für alle Plattformen bündeln lässt.
 
 ## Abhängigkeiten aktualisieren
 

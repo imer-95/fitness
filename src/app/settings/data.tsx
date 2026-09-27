@@ -12,9 +12,12 @@ import {
   restoreBackup,
   validateBackup,
 } from '@/db/repos/backup';
+import { ProBadge } from '@/components/pro/ProComponents';
 import { formatDateMedium, toDateKey } from '@/domain/dates';
+import { requirePro } from '@/features/pro';
 import { pickTextFile, shareTextFile, timestampForFilename } from '@/services/files';
 import { useActiveWorkout } from '@/state/activeWorkout';
+import { useIsPro } from '@/state/pro';
 import { useSettings } from '@/state/settings';
 import { toast } from '@/state/ui';
 import { Card } from '@/ui/Card';
@@ -27,6 +30,8 @@ import { spacing, useTheme } from '@/ui/theme';
 
 export default function DataScreen() {
   const { colors } = useTheme();
+  const isPro = useIsPro();
+  const proBadge = isPro ? undefined : <ProBadge small />;
   const [busy, setBusy] = useState<string | null>(null);
 
   const run = async (label: string, task: () => Promise<void>) => {
@@ -75,6 +80,7 @@ export default function DataScreen() {
     });
 
   const exportCsv = (kind: 'weights' | 'workouts' | 'nutrition' | 'cardio') =>
+    requirePro('csvExport') &&
     run('Export wird erstellt …', async () => {
       const content =
         kind === 'weights'
@@ -160,20 +166,28 @@ export default function DataScreen() {
 
       <Section title="Export als CSV (Excel)">
         <ListGroup>
-          <ListRow icon="dumbbell" title="Trainings & Sätze" onPress={() => exportCsv('workouts')} />
+          <ListRow icon="dumbbell" title="Trainings & Sätze" onPress={() => exportCsv('workouts')} right={proBadge} />
           <ListRow
             icon="scale-bathroom"
             iconColor={colors.weight}
             title="Körpergewicht"
             onPress={() => exportCsv('weights')}
+            right={proBadge}
           />
           <ListRow
             icon="food-apple"
             iconColor={colors.carbs}
             title="Ernährungstagebuch"
             onPress={() => exportCsv('nutrition')}
+            right={proBadge}
           />
-          <ListRow icon="run" iconColor={colors.cardio} title="Cardio" onPress={() => exportCsv('cardio')} />
+          <ListRow
+            icon="run"
+            iconColor={colors.cardio}
+            title="Cardio"
+            onPress={() => exportCsv('cardio')}
+            right={proBadge}
+          />
         </ListGroup>
       </Section>
 

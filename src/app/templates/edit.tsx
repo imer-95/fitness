@@ -11,6 +11,7 @@ import { parseDecimal, parseInteger, toInputValue } from '@/domain/format';
 import { createId } from '@/domain/id';
 import { SIDE_SHORT } from '@/domain/strength';
 import type { SetKind, Side, Template } from '@/domain/types';
+import { requirePlanSlot } from '@/features/pro';
 import { toast, useExercisePicker } from '@/state/ui';
 import { Button, IconButton } from '@/ui/Button';
 import { Card } from '@/ui/Card';
@@ -153,6 +154,7 @@ export default function TemplateEditScreen() {
       toast('Füge mindestens eine Übung hinzu', { kind: 'error' });
       return;
     }
+    if (!template && !(await requirePlanSlot())) return;
     setSaving(true);
     try {
       const base: Template = template ?? {

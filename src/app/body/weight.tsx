@@ -1,7 +1,13 @@
 import { useMemo, useState } from 'react';
 import { Pressable, StyleSheet } from 'react-native';
 
-import { computeWeightStats, WEIGHT_RANGES, WeightChart, type WeightRange } from '@/components/body/WeightChart';
+import {
+  computeWeightStats,
+  visibleWeightRange,
+  WeightChart,
+  WeightRangePicker,
+  type WeightRange,
+} from '@/components/body/WeightChart';
 import { deleteWeight, listWeights, upsertWeight } from '@/db/repos/body';
 import { useQuery } from '@/db/useQuery';
 import { bmi, bmiCategory } from '@/domain/body';
@@ -9,11 +15,11 @@ import { formatDateMedium, formatDayRelative, todayKey } from '@/domain/dates';
 import { formatNumber, formatSigned, parseDecimal, toInputValue } from '@/domain/format';
 import type { DateKey, WeightEntry } from '@/domain/types';
 import { haptics } from '@/services/haptics';
+import { useIsPro } from '@/state/pro';
 import { useSettings } from '@/state/settings';
 import { toast } from '@/state/ui';
 import { Button } from '@/ui/Button';
 import { Card } from '@/ui/Card';
-import { Segmented } from '@/ui/Chips';
 import { DateField } from '@/ui/DatePicker';
 import { confirm } from '@/ui/dialogs';
 import { NumberField } from '@/ui/Fields';
@@ -29,9 +35,11 @@ export default function WeightScreen() {
   const heightCm = useSettings((s) => s.profile.heightCm);
   const [date, setDate] = useState<DateKey>(todayKey());
   const [range, setRange] = useState<WeightRange>('90');
+  const isPro = useIsPro();
   const weights = useQuery(() => listWeights(), [], ['weights']);
   const entries = useMemo(() => weights.data ?? [], [weights.data]);
   const stats = useMemo(() => computeWeightStats(entries, targetWeight), [entries, targetWeight]);
+  const shownRange = visibleWeightRange(range, isPro);
   const existing = entries.find((e) => e.date === date) ?? null;
   const lastBefore = [...entries].reverse().find((e) => e.date <= date) ?? stats.latest;
 
@@ -92,7 +100,7 @@ export default function WeightScreen() {
                 unit="kg"
                 icon="flag-checkered"
                 color={colors.success}
-                sub={stats.goalDate ? `≈ ${formatDateMedium(stats.goalDate)}` : null}
+                sub={!isPro ? 'Prognose mit Pro' : stats.goalDate ? `≈ ${formatDateMedium(stats.goalDate)}` : null}
               />
             ) : null}
             {bmiValue != null ? (
@@ -101,8 +109,8 @@ export default function WeightScreen() {
           </StatGrid>
 
           <Card style={styles.gap}>
-            <Segmented<WeightRange> options={WEIGHT_RANGES} value={range} onChange={setRange} />
-            <WeightChart entries={entries} range={range} targetWeight={targetWeight} />
+            <WeightRangePicker value={shownRange} onChange={setRange} />
+            <WeightChart entries={entries} range={shownRange} targetWeight={targetWeight} />
             <Txt variant="caption" color="textTertiary">
               Punkte = tägliche Messungen, Linie = 7-Tage-Durchschnitt. Das Tagesgewicht schwankt durch Wasser & Essen –
               entscheidend ist der Trend.

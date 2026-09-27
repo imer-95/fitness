@@ -70,6 +70,8 @@ export function ChipWrap({ children, style }: { children: ReactNode; style?: Sty
 export interface SegmentOption<T extends string> {
   value: T;
   label: string;
+  /** Shows a small lock (e.g. Pro features). */
+  locked?: boolean;
 }
 
 export function Segmented<T extends string>({
@@ -109,14 +111,17 @@ export function Segmented<T extends string>({
               },
             ]}
           >
-            <Txt
-              variant="subhead"
-              weight={active ? '700' : '500'}
-              color={active ? 'text' : 'textSecondary'}
-              numberOfLines={1}
-            >
-              {o.label}
-            </Txt>
+            <View style={styles.segmentLabel}>
+              <Txt
+                variant="subhead"
+                weight={active ? '700' : '500'}
+                color={active ? 'text' : 'textSecondary'}
+                numberOfLines={1}
+              >
+                {o.label}
+              </Txt>
+              {o.locked ? <Icon name="lock" size={12} color={colors.textTertiary} /> : null}
+            </View>
           </Pressable>
         );
       })}
@@ -161,4 +166,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: spacing.xs,
   },
+  segmentLabel: { flexDirection: 'row', alignItems: 'center', gap: 3 },
 });

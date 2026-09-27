@@ -16,7 +16,11 @@ gegliedert: **Heute**, **Training**, **Ernährung**, **Fortschritt** und **Profi
 9. [Profil und Einstellungen](#9-profil-und-einstellungen)
 10. [Werkzeuge](#10-werkzeuge)
 11. [Daten sichern, exportieren und löschen](#11-daten-sichern-exportieren-und-löschen)
-12. [Tipps und häufige Fragen](#12-tipps-und-häufige-fragen)
+12. [Formkurve Pro](#12-formkurve-pro)
+13. [Rechtliches](#13-rechtliches)
+14. [Tipps und häufige Fragen](#14-tipps-und-häufige-fragen)
+
+Funktionen mit dem Zusatz **(Pro)** gehören zum Abo [Formkurve Pro](#12-formkurve-pro).
 
 ---
 
@@ -91,7 +95,7 @@ Jede Übung erscheint als Karte mit einer Zeile pro Satz:
 
 - Grau vorausgefüllte Werte stammen vom letzten Training. **Hast du genau das wieder geschafft, reicht der Haken** – die
   grauen Werte werden übernommen.
-- Neben dem Übungsnamen erscheint ein **Steigerungs-Tipp** (z. B. „Zeit für 42,5 kg?“), wenn du in den letzten beiden
+- Neben dem Übungsnamen erscheint ein **Steigerungs-Tipp** (Pro, z. B. „Zeit für 42,5 kg?“), wenn du in den letzten beiden
   Trainings dasselbe Höchstgewicht mit mindestens gleich vielen Wiederholungen geschafft hast.
 - **Satz hinzufügen** schlägt die Werte vom letzten Mal vor – gibt es keine, die des vorherigen Satzes.
 - Die Angabe „pro Seite“ bzw. „inkl./exkl. Stange“ wird an der Übung angezeigt. Du trägst das Gewicht genauso ein, wie du
@@ -160,6 +164,7 @@ Ein Plan ist eine Vorlage für ein Training, z. B. „Brust, Bizeps, Bauch“.
   Zielwerte, Pausenzeit und Seiten (links/rechts) fest.
 - Schneller geht es nach einem Training: **Als Plan speichern** übernimmt Übungen und Sätze.
 - Das Menü **⋯** eines Plans bietet: Training starten, Bearbeiten, Duplizieren und Löschen.
+- Kostenlos sind **3 Pläne** enthalten, mit Pro unbegrenzt viele.
 
 Beim Starten eines Plans werden als Vorschlag die Werte vom letzten Mal angezeigt – so siehst du immer deinen aktuellen
 Stand. Nur wenn es für einen Satz noch keine gibt, werden die Zielwerte aus dem Plan verwendet.
@@ -190,8 +195,8 @@ Die Bibliothek (**Profil → Übungsbibliothek** oder beim Hinzufügen einer Üb
 Muskelgruppen und mit den Namen, die an Studiogeräten üblich sind. Suche und Filter nach Muskelgruppe helfen beim
 Finden; „Zuletzt“ zeigt die zuletzt trainierten Übungen.
 
-Ein Tipp auf eine Übung zeigt ihre **Entwicklung** (Diagramm für 1RM, Gewicht oder Volumen), Bestwerte und alle
-bisherigen Einheiten.
+Ein Tipp auf eine Übung zeigt ihre Bestwerte, alle bisherigen Einheiten und die **Entwicklung** (Pro: Diagramm für 1RM,
+Gewicht oder Volumen).
 
 **Eigene Übung anlegen** („Übung anlegen“ in der Bibliothek oder direkt aus der Suche):
 
@@ -247,7 +252,8 @@ Die Gewichtsseite zeigt:
   Essen. Achte auf den Trend, nicht auf einzelne Tage.
 - **Pro Woche** – durchschnittliche Veränderung der letzten vier Wochen.
 - **7 Tage / 30 Tage** – Veränderung des Trends.
-- **Bis zum Ziel** – verbleibende Kilos und ein geschätztes Datum, wann du das Zielgewicht erreichst.
+- **Bis zum Ziel** – verbleibende Kilos und (Pro) ein geschätztes Datum, wann du das Zielgewicht erreichst.
+- **Verlauf** über 30 Tage oder 3 Monate, mit Pro auch über ein Jahr oder seit Beginn.
 - **BMI** mit Einordnung.
 
 **Tipp:** Wiege dich möglichst immer unter gleichen Bedingungen – morgens nach dem Aufstehen, vor dem Frühstück. Die
@@ -316,7 +322,8 @@ neuen Gewichtseinträgen angepasst. Unter **Profil → Ziele → Kalorien & Makr
 
 <img src="screenshots/fortschritt-kraft.jpg" width="220" align="right" alt="Fortschritt Kraft" />
 
-Der Tab **Fortschritt** hat vier Bereiche:
+Der Tab **Fortschritt** hat vier Bereiche. **Körper** ist kostenlos, **Kraft**, **Cardio** und **Essen** gehören zu
+Pro:
 
 | Bereich    | Inhalt                                                                                                                                            |
 | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -334,16 +341,18 @@ Beinbeuger, weißt du, worauf du achten solltest.
 
 <img src="screenshots/profil.jpg" width="220" align="right" alt="Profil und Einstellungen" />
 
-| Bereich          | Einstellungen                                                                                                                                                  |
-| ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Profil**       | Name, Geschlecht, Geburtsjahr, Größe, Aktivität, Ziel (Tipp auf die Profilkarte)                                                                               |
-| **Ziele**        | Zielgewicht, Kalorien & Makros (automatisch oder manuell), Wasser pro Tag, Trainings pro Woche                                                                 |
-| **Körper**       | Gewichtsverlauf, Körpermaße                                                                                                                                    |
-| **Training**     | Übungsbibliothek, Standard-Pausenzeit, Gewichtsschritte für Steigerungs-Tipps (z. B. 2,5 kg), Bildschirm aktiv halten, Vibration und Mitteilung bei Pausenende |
-| **Erinnerungen** | tägliche Erinnerung zum Wiegen mit Uhrzeit                                                                                                                     |
-| **Werkzeuge**    | 1RM-Rechner, Scheibenrechner                                                                                                                                   |
-| **Darstellung**  | Hell, Dunkel oder wie das System                                                                                                                               |
-| **Daten**        | Notizen importieren; Backup, Export & Wiederherstellung                                                                                                        |
+| Bereich           | Einstellungen                                                                                                                                                  |
+| ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Profil**        | Name, Geschlecht, Geburtsjahr, Größe, Aktivität, Ziel (Tipp auf die Profilkarte)                                                                               |
+| **Ziele**         | Zielgewicht, Kalorien & Makros (automatisch oder manuell), Wasser pro Tag, Trainings pro Woche                                                                 |
+| **Körper**        | Gewichtsverlauf, Körpermaße                                                                                                                                    |
+| **Training**      | Übungsbibliothek, Standard-Pausenzeit, Gewichtsschritte für Steigerungs-Tipps (z. B. 2,5 kg), Bildschirm aktiv halten, Vibration und Mitteilung bei Pausenende |
+| **Erinnerungen**  | tägliche Erinnerung zum Wiegen mit Uhrzeit                                                                                                                     |
+| **Werkzeuge**     | 1RM-Rechner, Scheibenrechner                                                                                                                                   |
+| **Formkurve Pro** | Abo abschließen, Status ansehen, Abo verwalten (Karte unter dem Profil)                                                                                        |
+| **Darstellung**   | Hell, Dunkel oder wie das System                                                                                                                               |
+| **Daten**         | Notizen importieren; Backup, Export & Wiederherstellung                                                                                                        |
+| **Rechtliches**   | Datenschutzerklärung, Nutzungsbedingungen, Impressum                                                                                                           |
 
 <br clear="right" />
 
@@ -367,13 +376,45 @@ Unter **Profil → Backup, Export & Wiederherstellung**:
 - **Backup exportieren** – alle Daten (Trainings, Pläne, Übungen, Gewicht, Maße, Cardio, Ernährung, Einstellungen) als
   JSON-Datei. Über das Teilen-Menü kannst du sie z. B. in iCloud Drive, Google Drive oder per Mail sichern.
 - **Backup wiederherstellen** – eine Backup-Datei auswählen. **Achtung:** ersetzt alle aktuellen Daten.
-- **Export als CSV (Excel)** – Trainings & Sätze, Körpergewicht, Ernährungstagebuch oder Cardio als Tabelle.
+- **Export als CSV (Excel)** (Pro) – Trainings & Sätze, Körpergewicht, Ernährungstagebuch oder Cardio als Tabelle.
 - **Alle Daten löschen** – setzt die App vollständig zurück (Sicherheitsabfrage).
 
 Da alle Daten nur auf dem Handy gespeichert sind, empfiehlt sich regelmäßig ein Backup – spätestens vor einem
 Handywechsel.
 
-## 12. Tipps und häufige Fragen
+## 12. Formkurve Pro
+
+Die App ist kostenlos. Mit dem Abo **Formkurve Pro** schaltest du zusätzliche Funktionen frei und unterstützt die
+Weiterentwicklung:
+
+| Pro-Funktion             | Wo                                                                 |
+| ------------------------ | ------------------------------------------------------------------ |
+| Erweiterte Statistiken   | Fortschritt → Kraft, Cardio und Essen                              |
+| Entwicklung jeder Übung  | Diagramm für 1RM, Höchstgewicht und Volumen in den Übungsdetails   |
+| Langzeit-Gewichtsverlauf | 1 Jahr und „Alle“ im Gewichtsverlauf, Prognose für das Zielgewicht |
+| Steigerungs-Tipps        | im laufenden Training neben dem Übungsnamen                        |
+| Unbegrenzt viele Pläne   | kostenlos sind 3 Pläne enthalten                                   |
+| Export für Excel         | CSV-Export unter Backup, Export & Wiederherstellung                |
+
+**Abschließen:** Profil → **Formkurve Pro** oder in einem Pro-Bereich auf **Mit Pro freischalten** tippen, Plan wählen
+(z. B. monatlich oder jährlich) und im Fenster von Google Play bzw. dem App Store bestätigen. Preis, Laufzeit und eine
+eventuelle Testphase stehen direkt über dem Kaufknopf.
+
+**Kündigen:** jederzeit in Google Play (Profilbild → Zahlungen & Abos → Abos) bzw. in den iPhone-Einstellungen
+(Apple-Account → Abonnements) – oder in Formkurve über **Profil → Formkurve Pro → Abo verwalten**. Pro bleibt bis zum
+Ende des bezahlten Zeitraums aktiv.
+
+**Neues Handy:** Mit demselben Google- bzw. Apple-Konto anmelden und **Käufe wiederherstellen** tippen. Deine
+Trainingsdaten überträgst du mit Backup und Wiederherstellung.
+
+Pro funktioniert auch offline; die App prüft den Abo-Status, sobald wieder eine Verbindung besteht.
+
+## 13. Rechtliches
+
+Unter **Profil → Rechtliches** findest du die Datenschutzerklärung, die Nutzungsbedingungen und das Impressum. Dieselben
+Texte stehen auch auf der Website zur App.
+
+## 14. Tipps und häufige Fragen
 
 **Brauche ich Internet?**
 Nein. Nur der Barcode-Scanner und „Online suchen“ fragen Produktdaten bei Open Food Facts ab. Alles andere funktioniert

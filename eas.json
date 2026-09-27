@@ -12,6 +12,15 @@
     },
     "production": {
       "autoIncrement": true
+    },
+    "personal": {
+      "distribution": "internal",
+      "android": {
+        "buildType": "apk"
+      },
+      "env": {
+        "EXPO_PUBLIC_PRO_UNLOCKED": "1"
+      }
     }
   },
   "submit": {

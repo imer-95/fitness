@@ -54,6 +54,11 @@ export async function listTemplates(): Promise<Template[]> {
   }));
 }
 
+export async function countTemplates(): Promise<number> {
+  const row = await db().getFirstAsync<{ n: number }>('SELECT COUNT(*) AS n FROM templates');
+  return row?.n ?? 0;
+}
+
 export async function getTemplate(id: string): Promise<Template | null> {
   const all = await listTemplates();
   return all.find((t) => t.id === id) ?? null;

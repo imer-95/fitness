@@ -140,6 +140,15 @@ export default function OnboardingScreen() {
             onPress={() => setStep(1)}
           />
           <Button label="Überspringen" variant="ghost" color="#FFFFFF" onPress={skip} />
+          <Txt
+            variant="caption"
+            color="rgba(255,255,255,0.85)"
+            align="center"
+            accessibilityRole="link"
+            onPress={() => router.push('/legal/datenschutz')}
+          >
+            Deine Daten bleiben auf deinem Gerät · Datenschutzerklärung
+          </Txt>
         </ScrollView>
       </LinearGradient>
     );

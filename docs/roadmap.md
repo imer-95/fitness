@@ -30,6 +30,8 @@ für kommende Versionen – grob nach Nutzen und Aufwand sortiert.
 
 - Abzeichen und Meilensteine (z. B. „100 Trainings“, „10 t Volumen in einer Woche“).
 - Englische Übersetzung.
+- Optionale serverseitige Prüfung von Käufen über die Google Play Developer API, falls Missbrauch zum Thema wird.
+- Aktionscodes und Rabatt-Angebote für Formkurve Pro (werden in der Play Console angelegt).
 - Optionale, Ende-zu-Ende-verschlüsselte Synchronisation zwischen mehreren Geräten.
 - Veröffentlichung im App Store und bei Google Play (Store-Einträge, Datenschutzerklärung).
 

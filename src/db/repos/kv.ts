@@ -3,6 +3,12 @@ import { db } from '../sql';
 
 /** Small key/value store (JSON values) for settings and drafts. */
 
+/** Last known Pro subscription status (see state/pro.ts). */
+export const PRO_STATUS_KEY = 'proStatus';
+
+/** Keys that describe this device/store account and are therefore not part of backups. */
+export const DEVICE_ONLY_KEYS: readonly string[] = [PRO_STATUS_KEY];
+
 export async function kvGet<T>(key: string): Promise<T | null> {
   const row = await db().getFirstAsync<{ value: string }>('SELECT value FROM kv WHERE key = ?', [key]);
   if (!row) return null;

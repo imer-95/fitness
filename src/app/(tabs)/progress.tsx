@@ -2,7 +2,14 @@ import { router } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
-import { computeWeightStats, WEIGHT_RANGES, WeightChart, type WeightRange } from '@/components/body/WeightChart';
+import {
+  computeWeightStats,
+  visibleWeightRange,
+  WeightChart,
+  WeightRangePicker,
+  type WeightRange,
+} from '@/components/body/WeightChart';
+import { ProTeaser } from '@/components/pro/ProComponents';
 import { prValueText } from '@/components/workout/WorkoutDetails';
 import { listMeasurements, listWeights } from '@/db/repos/body';
 import { listCardio } from '@/db/repos/cardio';
@@ -28,6 +35,7 @@ import {
 import { formatNumber, formatSigned, formatVolume } from '@/domain/format';
 import { CARDIO_LABELS, MEASUREMENT_LABELS, MUSCLE_LABELS } from '@/domain/labels';
 import type { CardioType, MeasurementType } from '@/domain/types';
+import { useIsPro } from '@/state/pro';
 import { useSettings } from '@/state/settings';
 import { Card } from '@/ui/Card';
 import { BarChart } from '@/ui/charts/BarChart';
@@ -44,23 +52,38 @@ import { spacing, useTheme } from '@/ui/theme';
 
 type Tab = 'body' | 'strength' | 'cardio' | 'nutrition';
 
+/** What free users see in the Pro tabs instead of the statistics. */
+const PRO_TAB_POINTS: Record<Exclude<Tab, 'body'>, string[]> = {
+  strength: [
+    'Volumen und Trainings pro Woche',
+    'Trainingskalender der letzten Monate',
+    'Sätze pro Muskelgruppe',
+    'Neueste Rekorde',
+  ],
+  cardio: ['Cardio-Minuten pro Woche', 'Zeit, Distanz und Kalorien der letzten 90 Tage', 'Aufteilung nach Aktivität'],
+  nutrition: ['Kalorien der letzten 14 Tage', 'Durchschnitt von Kalorien, Eiweiß und Wasser', 'Tage im Zielbereich'],
+};
+
 export default function ProgressScreen() {
   const [tab, setTab] = useState<Tab>('body');
+  const isPro = useIsPro();
   return (
     <Screen safeTop>
       <LargeHeader title="Fortschritt" subtitle="Deine Entwicklung auf einen Blick" />
       <Segmented<Tab>
         options={[
           { value: 'body', label: 'Körper' },
-          { value: 'strength', label: 'Kraft' },
-          { value: 'cardio', label: 'Cardio' },
-          { value: 'nutrition', label: 'Essen' },
+          { value: 'strength', label: 'Kraft', locked: !isPro },
+          { value: 'cardio', label: 'Cardio', locked: !isPro },
+          { value: 'nutrition', label: 'Essen', locked: !isPro },
         ]}
         value={tab}
         onChange={setTab}
       />
       {tab === 'body' ? (
         <BodyTab />
+      ) : !isPro ? (
+        <ProTeaser feature="stats" points={PRO_TAB_POINTS[tab]} />
       ) : tab === 'strength' ? (
         <StrengthTab />
       ) : tab === 'cardio' ? (
@@ -84,6 +107,8 @@ function BodyTab() {
   const targetWeight = useSettings((s) => s.goals.targetWeight);
   const heightCm = useSettings((s) => s.profile.heightCm);
   const [range, setRange] = useState<WeightRange>('90');
+  const isPro = useIsPro();
+  const shownRange = visibleWeightRange(range, isPro);
   const weights = useQuery(() => listWeights(), [], ['weights']);
   const measurements = useQuery(listMeasurements, [], ['measurements']);
   const entries = useMemo(() => weights.data ?? [], [weights.data]);
@@ -143,8 +168,8 @@ function BodyTab() {
             </View>
           ) : null}
         </View>
-        <Segmented<WeightRange> options={WEIGHT_RANGES} value={range} onChange={setRange} />
-        <WeightChart entries={entries} range={range} targetWeight={targetWeight} />
+        <WeightRangePicker value={shownRange} onChange={setRange} />
+        <WeightChart entries={entries} range={shownRange} targetWeight={targetWeight} />
       </Card>
 
       <StatGrid>
@@ -169,7 +194,13 @@ function BodyTab() {
             unit="kg"
             icon="flag-checkered"
             color={colors.success}
-            sub={stats.goalDate ? `Prognose: ${formatDateShort(stats.goalDate)}` : 'Prognose bei stabilem Trend'}
+            sub={
+              !isPro
+                ? 'Prognose mit Pro'
+                : stats.goalDate
+                  ? `Prognose: ${formatDateShort(stats.goalDate)}`
+                  : 'Prognose bei stabilem Trend'
+            }
           />
         ) : null}
         {bmiValue != null ? (

@@ -48,6 +48,9 @@ Hinweise:
   Push-Benachrichtigungen in Expo Go betreffen die App nicht.
 - Die Daten in Expo Go liegen in der Expo-Go-App. Beim späteren Wechsel auf die eigene App vorher ein Backup exportieren
   und in der neuen App wiederherstellen.
+- **Käufe (Formkurve Pro) sind in Expo Go nicht möglich.** Zum Testen lässt sich Pro in der Paywall simulieren. Echte
+  Testkäufe gehen nur mit einer Version aus dem Play Store (interner Test, siehe
+  [Monetarisierung](monetarisierung-und-recht.md#2-google-play-schritt-für-schritt)).
 
 ### Web-Vorschau
 
@@ -124,6 +127,18 @@ Beim ersten Mal ggf. in Xcode (`ios/Formkurve.xcworkspace`) unter **Signing & Ca
 auswählen und auf dem iPhone den Entwicklermodus aktivieren. Einschränkung von Apple: Die App muss **alle 7 Tage** neu
 installiert werden.
 
+### Eigene Version mit allen Pro-Funktionen
+
+Für dein eigenes Handy gibt es das EAS-Profil `personal`. Es baut eine APK, in der Formkurve Pro ohne Abo dauerhaft
+freigeschaltet ist:
+
+```bash
+eas build -p android --profile personal
+```
+
+Diese Version ist nur für dich gedacht – nicht in den Play Store hochladen und nicht weitergeben. Sie hat denselben
+Paketnamen wie die Store-Version; auf einem Gerät kann nur eine der beiden installiert sein (vorher Backup machen).
+
 ## 5. Updates
 
 - **Neue Version bauen**: Code aktualisieren (`git pull`), `npm install`, dann den Build-Befehl erneut ausführen. Im
@@ -150,9 +165,14 @@ Die App fragt nur nach diesen Berechtigungen, jeweils erst bei Bedarf:
 - **Kamera** – für den Barcode-Scanner (kein Mikrofon, keine Fotos).
 - **Mitteilungen** – für das Ende der Satzpause und die tägliche Wiege-Erinnerung.
 - **Vibration** (Android) – für haptisches Feedback.
+- **Käufe über Google Play** (Android, `com.android.vending.BILLING`) – für das Pro-Abo; wird automatisch gesetzt und
+  nicht abgefragt.
 
-Internetzugriff wird nur für die Produktsuche bei [Open Food Facts](https://world.openfoodfacts.org) benötigt. Es gibt
-keine Analyse-, Werbe- oder Tracking-Dienste.
+Internetzugriff wird nur für die Produktsuche bei [Open Food Facts](https://world.openfoodfacts.org) und für Käufe
+benötigt. Es gibt keine Analyse-, Werbe- oder Tracking-Dienste.
+
+Alles zur Veröffentlichung im Play Store (Konto, Abo anlegen, Tests, Datenschutz, Impressum, Steuern) steht in
+[Monetarisierung, Recht & Steuern](monetarisierung-und-recht.md).
 
 ## 7. Fehlerbehebung
 

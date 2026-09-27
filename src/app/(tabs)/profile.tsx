@@ -3,6 +3,7 @@ import { router } from 'expo-router';
 import { useState } from 'react';
 import { Linking, Platform, StyleSheet, View } from 'react-native';
 
+import { ProProfileCard } from '@/components/pro/ProComponents';
 import { getLatestWeight } from '@/db/repos/body';
 import { useQuery } from '@/db/useQuery';
 import { bmi, bmiCategory } from '@/domain/body';
@@ -87,6 +88,8 @@ export default function ProfileScreen() {
           </View>
         </View>
       </Card>
+
+      <ProProfileCard />
 
       <Section title="Ziele">
         <ListGroup>
@@ -235,6 +238,29 @@ export default function ProfileScreen() {
             icon="database-export"
             title="Backup, Export & Wiederherstellung"
             onPress={() => router.push('/settings/data')}
+          />
+        </ListGroup>
+      </Section>
+
+      <Section title="Rechtliches">
+        <ListGroup>
+          <ListRow
+            icon="shield-lock-outline"
+            iconColor={colors.textSecondary}
+            title="Datenschutzerklärung"
+            onPress={() => router.push('/legal/datenschutz')}
+          />
+          <ListRow
+            icon="file-document-outline"
+            iconColor={colors.textSecondary}
+            title="Nutzungsbedingungen"
+            onPress={() => router.push('/legal/nutzungsbedingungen')}
+          />
+          <ListRow
+            icon="card-account-details-outline"
+            iconColor={colors.textSecondary}
+            title="Impressum"
+            onPress={() => router.push('/legal/impressum')}
           />
         </ListGroup>
       </Section>

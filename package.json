@@ -11,9 +11,12 @@
     "lint": "expo lint",
     "typecheck": "tsc --noEmit",
     "test": "jest",
-    "check": "npm run typecheck && npm run lint && npm run format:check && npm test",
+    "check": "npm run typecheck && npm run lint && npm run format:check && npm run legal:check && npm test",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "legal:pages": "node scripts/build-legal-pages.mjs",
+    "legal:check": "node scripts/build-legal-pages.mjs --check",
+    "release:check": "node scripts/build-legal-pages.mjs --release && npm run check"
   },
   "dependencies": {
     "@expo/vector-icons": "^15.0.2",
@@ -25,6 +28,7 @@
     "expo-file-system": "~57.0.7",
     "expo-font": "~57.0.4",
     "expo-haptics": "~57.0.3",
+    "expo-iap": "^5.8.1",
     "expo-keep-awake": "~57.0.2",
     "expo-linear-gradient": "~57.0.2",
     "expo-linking": "~57.0.11",

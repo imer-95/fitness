@@ -94,7 +94,14 @@ Ernährungstagebuch – alles in einer App.
 - Helles und **dunkles Design** (oder automatisch wie das System).
 - **Backup** als JSON-Datei, Wiederherstellung und **CSV-Export** für Excel.
 - **Datenschutz**: Alle Daten liegen nur auf deinem Handy (SQLite). Kein Konto, keine Werbung, kein Tracking. Internet
-  wird nur für die Produktsuche (Barcode oder Name) benötigt.
+  wird nur für die Produktsuche (Barcode oder Name) und für Käufe benötigt.
+
+### 👑 Formkurve Pro
+
+Die App ist kostenlos. Mit dem Abo **Formkurve Pro** (z. B. 4,99 € im Monat oder 39,99 € im Jahr, über Google Play bzw.
+den App Store) werden zusätzlich freigeschaltet: erweiterte Statistiken (Kraft, Cardio, Essen), die Entwicklung jeder
+Übung als Diagramm, Langzeit-Gewichtsverlauf mit Prognose, Steigerungs-Tipps, unbegrenzt viele Trainingspläne (kostenlos: 3) und der CSV-Export. Protokollieren, Import und Backup bleiben immer kostenlos. Was du beim Verkauf rechtlich und
+steuerlich beachten musst, steht in [Monetarisierung, Recht & Steuern](docs/monetarisierung-und-recht.md).
 
 ## Screenshots
 
@@ -195,15 +202,16 @@ docs/             Dokumentation und Screenshots
 
 ## Dokumentation
 
-| Dokument                                               | Inhalt                                                       |
-| ------------------------------------------------------ | ------------------------------------------------------------ |
-| [Benutzerhandbuch](docs/benutzerhandbuch.md)           | alle Funktionen der App Schritt für Schritt                  |
-| [Notizen-Import](docs/notizen-import.md)               | unterstütztes Textformat mit Beispielen                      |
-| [Installation & Build](docs/installation-und-build.md) | App auf iPhone und Android installieren, Builds, Updates     |
-| [Berechnungen](docs/berechnungen.md)                   | Formeln: 1RM, Volumen, Gewichtstrend, Kalorienbedarf, Cardio |
-| [Architektur](docs/architektur.md)                     | Aufbau des Codes, Datenbankschema, Datenfluss                |
-| [Entwicklung](docs/entwicklung.md)                     | Tests, Konventionen, neue Übungen/Lebensmittel, Migrationen  |
-| [Roadmap](docs/roadmap.md)                             | Ideen für kommende Versionen                                 |
+| Dokument                                                              | Inhalt                                                             |
+| --------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| [Benutzerhandbuch](docs/benutzerhandbuch.md)                          | alle Funktionen der App Schritt für Schritt                        |
+| [Notizen-Import](docs/notizen-import.md)                              | unterstütztes Textformat mit Beispielen                            |
+| [Installation & Build](docs/installation-und-build.md)                | App auf iPhone und Android installieren, Builds, Updates           |
+| [Berechnungen](docs/berechnungen.md)                                  | Formeln: 1RM, Volumen, Gewichtstrend, Kalorienbedarf, Cardio       |
+| [Architektur](docs/architektur.md)                                    | Aufbau des Codes, Datenbankschema, Datenfluss                      |
+| [Entwicklung](docs/entwicklung.md)                                    | Tests, Konventionen, neue Übungen/Lebensmittel, Migrationen        |
+| [Monetarisierung, Recht & Steuern](docs/monetarisierung-und-recht.md) | Pro-Abo im Play Store, Datenschutz, Impressum, Gewerbe und Steuern |
+| [Roadmap](docs/roadmap.md)                                            | Ideen für kommende Versionen                                       |
 
 ## Hinweise
 
@@ -213,3 +221,6 @@ docs/             Dokumentation und Screenshots
   der [Open Database License](https://opendatacommons.org/licenses/odbl/1-0/).
 - Alle Daten bleiben auf dem Gerät. Vor einem Handywechsel am besten unter **Profil → Backup, Export &
   Wiederherstellung → Backup exportieren** eine Sicherung anlegen.
+- Datenschutzerklärung, Nutzungsbedingungen und Impressum stehen in der App unter **Profil → Rechtliches** und als
+  Webseiten in [`docs/legal`](docs/legal) (veröffentlicht über GitHub Pages). Vor der Veröffentlichung müssen Name und
+  Anschrift in [`src/legal/content.ts`](src/legal/content.ts) eingetragen werden.

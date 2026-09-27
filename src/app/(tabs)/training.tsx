@@ -11,6 +11,7 @@ import { useQuery } from '@/db/useQuery';
 import { formatAgo, toDateKey } from '@/domain/dates';
 import { createId } from '@/domain/id';
 import type { Template } from '@/domain/types';
+import { requirePlanSlot } from '@/features/pro';
 import { startEmptyWorkout, startTemplateWorkout } from '@/features/workoutActions';
 import { useActiveWorkout } from '@/state/activeWorkout';
 import { toast } from '@/state/ui';
@@ -41,10 +42,15 @@ export default function TrainingScreen() {
   );
   const names = useMemo(() => new Map((exercises.data ?? []).map((e) => [e.id, e.name])), [exercises.data]);
 
+  const newPlan = async () => {
+    if (await requirePlanSlot()) router.push('/templates/edit');
+  };
+
   const onTemplateAction = async (template: Template, action: TemplateAction) => {
     if (action === 'start') await startTemplateWorkout(template);
     if (action === 'edit') router.push({ pathname: '/templates/edit', params: { id: template.id } });
     if (action === 'duplicate') {
+      if (!(await requirePlanSlot())) return;
       await saveTemplate({
         ...template,
         id: createId(),
@@ -138,7 +144,7 @@ export default function TrainingScreen() {
         />
       </View>
 
-      <Section title="Meine Pläne" action={{ label: 'Neuer Plan', onPress: () => router.push('/templates/edit') }}>
+      <Section title="Meine Pläne" action={{ label: 'Neuer Plan', onPress: () => void newPlan() }}>
         {templates.data && templates.data.length === 0 ? (
           <Card>
             <EmptyState
@@ -146,7 +152,7 @@ export default function TrainingScreen() {
               icon="clipboard-list-outline"
               title="Noch keine Pläne"
               message="Speichere ein beendetes Training als Plan oder lege einen neuen an – z. B. „Brust, Bizeps, Bauch“."
-              action={{ label: 'Plan erstellen', icon: 'plus', onPress: () => router.push('/templates/edit') }}
+              action={{ label: 'Plan erstellen', icon: 'plus', onPress: () => void newPlan() }}
             />
           </Card>
         ) : null}

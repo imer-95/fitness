@@ -12,6 +12,7 @@ import { useQuery } from '@/db/useQuery';
 import { formatDateLong, formatDuration, toDateKey } from '@/domain/dates';
 import { formatVolume } from '@/domain/format';
 import { setVolume } from '@/domain/strength';
+import { requirePlanSlot } from '@/features/pro';
 import { shareWorkout } from '@/features/shareWorkout';
 import { toast } from '@/state/ui';
 import { Button } from '@/ui/Button';
@@ -47,6 +48,7 @@ export default function WorkoutSummaryScreen() {
   const records = prs.data ?? [];
 
   const saveAsTemplate = async () => {
+    if (!(await requirePlanSlot())) return;
     const template = templateFromWorkout(w, w.title || 'Mein Plan', await nextTemplatePosition());
     await saveTemplate(template);
     toast('Als Plan gespeichert', { message: 'Beim nächsten Mal mit einem Tipp starten.' });

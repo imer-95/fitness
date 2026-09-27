@@ -13,6 +13,7 @@ und kein Konto. Der Code ist in klar getrennte Schichten aufgeteilt, damit die F
 | Zustand          | Zustand-Stores für Einstellungen, laufendes Training, Timer und UI                                                                   |
 | Diagramme        | eigene Komponenten auf Basis von react-native-svg                                                                                    |
 | Gerätefunktionen | expo-notifications, expo-haptics, expo-keep-awake, expo-camera, expo-file-system, expo-sharing, expo-document-picker, expo-clipboard |
+| Käufe            | expo-iap (Google Play Billing, StoreKit 2) – ohne eigenen Server                                                                     |
 | Qualität         | Jest (jest-expo), ESLint (eslint-config-expo inkl. React-Compiler-Regeln), Prettier                                                  |
 
 ## Schichten
@@ -56,6 +57,7 @@ flowchart TD
 | `src/ui`         | Design-System: Farben (hell/dunkel), Typografie, Buttons, Eingabefelder, Listen, Sheets, Dialoge, Diagramme.                                                                                                                                                  |
 | `src/components` | Fachliche UI-Bausteine: Satzzeile, Übungskarte, Pausen-Timer-Leiste, Trainingsdetails, Gewichtsdiagramm …                                                                                                                                                     |
 | `src/app`        | Bildschirme. Jede Datei ist eine Route.                                                                                                                                                                                                                       |
+| `src/legal`      | Rechtstexte (Datenschutzerklärung, Nutzungsbedingungen, Impressum) – eine Quelle für App und Website.                                                                                                                                                         |
 | `src/dev`        | Beispieldaten für die Web-Vorschau (nur Web, nicht in den Handy-Apps enthalten).                                                                                                                                                                              |
 
 **Regel:** Abhängigkeiten zeigen nur nach unten. `domain` kennt weder React noch die Datenbank; Repositories kennen kein
@@ -70,8 +72,9 @@ React; Bildschirme greifen über Repositories, Stores und Features auf Daten zu.
    sql.js.
 3. `initializeDatabase`: [Migrationen](#migrationen) ausführen und [Startdaten](#startdaten) einspielen.
 4. Einstellungen und ein eventuell laufendes Training aus der Datenbank laden.
-5. Mitteilungen konfigurieren (Android-Kanäle „Pausen-Timer“ und „Erinnerungen“).
-6. Splash-Screen ausblenden. Ist die Einrichtung noch nicht abgeschlossen, wird zum Onboarding weitergeleitet.
+5. Den zuletzt bekannten Pro-Status laden und die Verbindung zum Store im Hintergrund aufbauen.
+6. Mitteilungen konfigurieren (Android-Kanäle „Pausen-Timer“ und „Erinnerungen“).
+7. Splash-Screen ausblenden. Ist die Einrichtung noch nicht abgeschlossen, wird zum Onboarding weitergeleitet.
 
 ## Datenbank
 
@@ -161,6 +164,41 @@ Der **Pausen-Timer** ([`restTimer.ts`](../src/state/restTimer.ts)) speichert den
 stimmt die Anzeige auch, nachdem die App im Hintergrund war. Zusätzlich wird eine lokale Mitteilung zum Endzeitpunkt
 geplant und beim Überspringen oder Verändern der Pause neu geplant bzw. gelöscht.
 
+## Formkurve Pro (Abo)
+
+Das Abo kommt ohne eigenen Server aus: Der Store (Google Play bzw. App Store) ist die einzige Quelle für den Status.
+
+| Datei                                                                          | Aufgabe                                                                                                                                                    |
+| ------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [`domain/pro.ts`](../src/domain/pro.ts)                                        | Pro-Funktionen, Planlimit, Produkt-IDs, Tarife aus Store-Daten (Basis-Abos, Testphase, Ersparnis), Berechtigungsprüfung, Offline-Cache – rein und getestet |
+| [`services/billing.ts`](../src/services/billing.ts)                            | Anbindung an expo-iap: Verbindung, Produkte, Kauf starten, Kauf bestätigen, Wiederherstellen, Abo-Verwaltung öffnen                                        |
+| [`services/billing.web.ts`](../src/services/billing.web.ts)                    | Web-Vorschau ohne Store                                                                                                                                    |
+| [`state/pro.ts`](../src/state/pro.ts)                                          | Zustand `isPro`, Tarife, Kaufablauf, Listener, Aktualisierung beim Zurückkehren in die App                                                                 |
+| [`features/pro.ts`](../src/features/pro.ts)                                    | `openPaywall()`, `requirePro()`, `requirePlanSlot()` für Bildschirme                                                                                       |
+| [`app/pro.tsx`](../src/app/pro.tsx), [`components/pro`](../src/components/pro) | Paywall, Sperrkarten, PRO-Abzeichen, Profilkarte                                                                                                           |
+
+Ablauf:
+
+1. Beim Start liest die App den letzten Status aus der Tabelle `kv` (Schlüssel `proStatus`). Ein aktiver Status gilt
+   ohne Store-Antwort höchstens 35 Tage. Der Schlüssel ist gerätebezogen und wird **nicht** ins Backup übernommen.
+2. Im Hintergrund verbindet sich die App mit dem Store und fragt die aktiven Käufe ab (`getAvailablePurchases`). Das
+   Ergebnis überschreibt den Cache. Das passiert erneut, wenn die App nach mehr als zehn Minuten wieder in den
+   Vordergrund kommt.
+3. Kauf: Die Paywall zeigt die Tarife mit Preisen des Stores. `requestPurchase` öffnet das Kauffenster, das Ergebnis
+   kommt über `purchaseUpdatedListener`. Die App bestätigt den Kauf (`finishTransaction`) – ohne Bestätigung erstattet
+   Google ihn nach drei Tagen – und schaltet Pro frei.
+4. Gesperrte Bereiche prüfen `useIsPro()` bzw. rufen `requirePro()` auf, das bei Bedarf die Paywall öffnet.
+
+Sonderfälle: `EXPO_PUBLIC_PRO_UNLOCKED=1` (EAS-Profil `personal`) schaltet Pro fest frei. In Entwicklungs-Builds und in
+der Web-Vorschau lässt sich Pro in der Paywall simulieren.
+
+## Rechtstexte
+
+[`src/legal/content.ts`](../src/legal/content.ts) enthält Datenschutzerklärung, Nutzungsbedingungen und Impressum als
+strukturierte Daten. Die App zeigt sie unter `/legal/[doc]` an, [`scripts/build-legal-pages.mjs`](../scripts/build-legal-pages.mjs)
+erzeugt daraus statische Webseiten in `docs/legal` (GitHub Pages). Die CI prüft, ob die Webseiten aktuell sind;
+`npm run release:check` bricht ab, solange Platzhalter im Impressum stehen.
+
 ## Plattformunterschiede
 
 | Funktion        | iOS / Android                                   | Web-Vorschau                                                                                       |
@@ -170,6 +208,7 @@ geplant und beim Überspringen oder Verändern der Pause neu geplant bzw. gelös
 | Dialoge         | native Alert-Dialoge                            | eigene Dialog-Komponente (`DialogHost`)                                                            |
 | Dateien         | expo-file-system + Teilen-Menü, Document Picker | Download im Browser, Dateiauswahl                                                                  |
 | Barcode-Scanner | expo-camera                                     | Kamera je nach Browser, sonst manuelle Eingabe                                                     |
+| Käufe           | Google Play Billing / StoreKit (expo-iap)       | keine; Pro lässt sich simulieren                                                                   |
 | Beispieldaten   | –                                               | `window.__formkurveDemo()` (siehe [Entwicklung](entwicklung.md#beispieldaten-in-der-web-vorschau)) |
 
 ## Backup-Format
@@ -198,6 +237,7 @@ Transaktion alle Tabellen geleert und die Zeilen eingefügt. Unbekannte Spalten 
 ## Datenschutz
 
 - Keine Konten, keine Server, keine Analyse- oder Werbedienste.
-- Die einzige Netzwerkverbindung ist die Produktsuche bei Open Food Facts – übertragen wird nur der Barcode bzw. der
-  Suchbegriff.
+- Netzwerkverbindungen gibt es nur für die Produktsuche bei Open Food Facts (übertragen wird nur der Barcode bzw. der
+  Suchbegriff) und für Käufe über Google Play bzw. den App Store.
+- Der Pro-Status wird lokal gespeichert; es gibt keinen eigenen Server und keine Kaufdaten außerhalb des Stores.
 - Mitteilungen sind lokal geplant, es werden keine Push-Tokens erzeugt.

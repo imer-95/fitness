@@ -10,7 +10,7 @@ import {
 import { listCardio, saveCardio } from '@/db/repos/cardio';
 import { createExercise, deleteExercise, getExercise, listExercises } from '@/db/repos/exercises';
 import { buildImportPlan, importWorkouts } from '@/db/repos/importNotes';
-import { kvGet, kvSet } from '@/db/repos/kv';
+import { kvGet, kvSet, PRO_STATUS_KEY } from '@/db/repos/kv';
 import {
   addWater,
   copyMeal,
@@ -24,7 +24,7 @@ import {
   upsertOffFood,
 } from '@/db/repos/nutrition';
 import { activityByDay, analyzeTrainingHistory, muscleSetCounts, weeklyTraining } from '@/db/repos/stats';
-import { listTemplates, saveTemplate, templateFromWorkout } from '@/db/repos/templates';
+import { countTemplates, listTemplates, saveTemplate, templateFromWorkout } from '@/db/repos/templates';
 import { deleteWorkout, getExerciseContext, getWorkout, listWorkoutSummaries, saveWorkout } from '@/db/repos/workouts';
 import { SEED_EXERCISES } from '@/db/seed/exercises';
 import { seedDemoData } from '@/dev/demoData';
@@ -186,6 +186,7 @@ describe('workouts', () => {
     await saveTemplate(t);
     const templates = await listTemplates();
     expect(templates).toHaveLength(1);
+    expect(await countTemplates()).toBe(1);
     expect(templates[0].exercises[0].sets[0]).toEqual({
       reps: 10,
       weight: 60,
@@ -400,6 +401,14 @@ describe('backup', () => {
     expect(await getWorkout('w1')).not.toBeNull();
     expect((await listWeights())[0].weight).toBe(82);
     expect(await kvGet('settings')).toEqual({ name: 'Imer' });
+  });
+
+  test('the Pro status of this device is not part of a backup', async () => {
+    await kvSet(PRO_STATUS_KEY, { active: true, checkedAt: 1 });
+    await kvSet('settings', { name: 'Imer' });
+    const keys = ((await createBackup()).tables.kv ?? []).map((r) => r.key);
+    expect(keys).toContain('settings');
+    expect(keys).not.toContain(PRO_STATUS_KEY);
   });
 
   test('rejects foreign files', () => {
